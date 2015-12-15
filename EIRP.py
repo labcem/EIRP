@@ -133,7 +133,7 @@ for k in range(Exp):
                     cLevel=Level+Correction_V[:,1]
                 else:                    
                     cLevel=Level+Correction_H[:,1]
-                    time.sleep(Tmes)
+                time.sleep(Tmes)
             Trace=Level     
             MaxLevel=max(cLevel)           
             MaxIdx =cLevel.argmax()             
