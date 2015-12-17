@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import Spectrum
 from FC06 import * #classe du mât et de la table tournante de la CA
 
-ioff()
+
 nom=raw_input('Enter the name of the equipment?')
 if (os.path.isdir('Results_'+nom)==False):
     os.mkdir('Results_'+nom)
@@ -52,7 +52,7 @@ N=37      #Number of incident angles
 Angles=linspace(0,360,N)-180
 Pol=2       #Number of polarizations
 Exp=3    #Number of cutting planes
-Tmes=5     #dwell time
+Tmes=15     #dwell time
 
 
 
@@ -156,11 +156,9 @@ for k in range(Exp):
     plt.close()
 print "Raw data saved in file "+nom+'_raw.npz'
 savez(nom+'_raw.npz',Measurement=Measurement,Raw_Traces=Raw_Traces,f=f)
+
 print(u"Back to 0° and vertical polarization ")
-FC.setPolar(l)
-while FC.busy()=="1":
-    #print("NOK")
-    time.sleep(0.2)
 FC.setAngle(0)
+FC.setPolar(0)
 print("OK")
 
