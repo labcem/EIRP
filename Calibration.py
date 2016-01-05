@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 25 2015
-
 Calibration of the anechoic room, EDF Lab bât D16
-
 emmanuel.amador@edf.fr
 """
 from __future__ import division
@@ -13,19 +11,16 @@ import os
 import time
 import visa
 
-
 #Instrument modules
 import Spectrum
 import SignalGenerator
 from FC06 import * #classe du mât et de la table tournante de la CA
-
 
 test_name = raw_input('Enter the name of the calibration?')   
 if os.path.isdir('Calibration_'+test_name)==False:            #verify if the folder exists
    os.mkdir('Calibration_'+test_name)						#create the folder
     
 os.chdir('Calibration_'+test_name)
-
 
 ###############################################
 ##########   Testing parameters  ##############
@@ -44,16 +39,13 @@ Pol=2       #Number of polarizations (vertical + horizontal = 2)
 CableLoss=2.8 # Cable loss in dB
 P_gene=0+CableLoss #Signal generator power to get 0 dBm at the antenna input
 
-
-
 #Antenna gain (from calibration) interpolation for our measurement frequencies
 Logper_AH=array([4.62,5.85,5.92,6.43,6.81,6.86,7.58,7.35,7.54,7.73,8.28,8.16,7.93,8.07,8.38,8.06,8.11,8.57,7.98,8.25,8.06,7.80,8.10,7.63])
 G_ant_lin=transpose(array([linspace(1e9,12.5e9,24),10**(Logper_AH / 20)]))    # frequency | Antenna gain (linear values)
 G_ant_inter_lin=scipy.interp(f,G_ant_lin[:,0],G_ant_lin[:,1])   # interpolated gain (linear vlaues)
 G_ant_inter_db=transpose(array([f,20*log10(G_ant_inter_lin)]))  # interpolated gain (dB)   
 
-
-print '__________________________\nInstruments initializations\n'
+print '\nInstruments initializations\n'
 print '\nSpectrum analyzer:'
 Spectre=Spectrum.FSV30()
 Spectre.reset()
@@ -108,11 +100,10 @@ FC.AngleVel(20)
 #print '\nBack to optimal heigth'     
 #
 #FC.setHauteur(int(h_max))
-#
 
 FC.setHauteur(1200) #1.2m in full anechoic configuration
   
-print '________________________________\nCalibration of the chamber\n'
+print '\nCalibration of the chamber...\n'
 
            
 Calibration=empty([Pol,len(f),2])
