@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-
 Created on Thu Nov 26 2015
-
-Measurement with the anechoic room, EDF Lab bât D16
-
+Flexible EIRP Measurement with the anechoic room, EDF Lab bât D16
 emmanuel.amador@edf.fr
-
 """
-
 from __future__ import division
 import time
 import visa
@@ -17,12 +12,9 @@ import os
 from numpy import *
 import matplotlib.pyplot as plt
 
-
-
 #Instruments modules
 import Spectrum
 from FC06 import * #classe du mât et de la table tournante de la CA
-
 
 nom=raw_input('Enter the name of the equipment: ')
 if (os.path.isdir('Results_'+nom)==False):
@@ -39,7 +31,6 @@ f=Correction_V[:,0]
 ###############################################
 ##########   Testing parameters  ##############
 ###############################################
-
 fstart=f[0]      #Start frequency
 fstop=f[-1]       #Stop frequency
 fcenter=0.5*(fstart+fstop)   #Center frequency       
@@ -59,7 +50,6 @@ ExpPol=array([[1, 0],\
               [0, 1],\
               [0, 1]])
 
-
 ###Stop criterion
 ###channels center frequencies (european wifi)
 ##f0=2.412e9
@@ -70,12 +60,9 @@ ExpPol=array([[1, 0],\
 ##peaksindx=zeros(len(fc))
 ##for i in range(len(fc)):
 #    peaksindx[i]=argmin(abs(f-fc[i]))
-
-
 Level_criterion=-45
 
-
-print '___________________________\nInstruments initializations\n'
+print '\nInstruments initializations\n'
 print '\nSpectrum analyzer:'
 Spectre=Spectrum.FSV30()
 Spectre.reset()
@@ -94,7 +81,7 @@ FC.AngleVel(20)
 FC.setAngle(0)
 print '\nFull anechoic chamber, heigth=1.1 m'
 FC.setHauteur(1100)
-print '____________________\nMeasurement\n'                 
+print '\nMeasurement...\n'                 
 Measurement=empty([Pol,Exp,N,2])
 Raw_Traces=empty([Pol,Exp,N,2,SwpPt])
 
