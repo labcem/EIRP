@@ -59,7 +59,7 @@ Tmes=15     #dwell time
 #    peaksindx[i]=argmin(abs(f-fc[i]))
 Level_criterion=-60
 
-print '___________________________\nInstruments initializations\n'
+print '\nInstruments initializations\n'
 print '\nSpectrum analyzer:'
 Spectre=Spectrum.FSV30()
 Spectre.reset()
