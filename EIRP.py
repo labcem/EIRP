@@ -43,7 +43,7 @@ SwpPt=len(f)       #Number of points
 
 N=37      #Number of incident angles
 Angles=linspace(0,360,N)-180
-Pol=2       #Number of polarizations
+Pol=2       #Number of polarisations
 Exp=1    #Number of cutting planes
 Tmes=15     #dwell time
 
@@ -59,8 +59,8 @@ Tmes=15     #dwell time
 #    peaksindx[i]=argmin(abs(f-fc[i]))
 Level_criterion=-60
 
-print '\nInstruments initializations\n'
-print '\nSpectrum analyzer:'
+print '\nInstruments initialisations\n'
+print '\nSpectrum analyser:'
 Spectre=Spectrum.FSV30()
 Spectre.reset()
 Spectre.startFreq(fstart)    
@@ -76,7 +76,7 @@ FC.reset()
 FC.AngleVel(20)
 #FC.hVel(20)
 FC.setAngle(0)
-print 'Full anechoic chamber, heigth=1.1 m'
+print 'Full anechoic chamber, height=1.1 m'
 FC.setHauteur(1100)
 
 print '\nMeasurement...\n'
@@ -91,15 +91,15 @@ for k in range(Exp):
         raw_input ("Place your object according to cutting plane %s, Presse Enter " %(k+1))
     for l in range (0,Pol):
         if l==0:
-            Polarization='V'
+            Polarisation='V'
         else:
-            Polarization='H'
+            Polarisation='H'
         FC.setPolar(l)
         while FC.busy()=="1":
             #print("NOK")
             time.sleep(0.2)
         print("OK")
-        print("Cutting plane : %i, antenna polarization : %s " %(k+1,Polarization))
+        print("Cutting plane : %i, antenna polarisation : %s " %(k+1,Polarisation))
         for j in range(0,len(Angles)):              
             #print ("Go to %s deg" %(Angles [j]))
             FC.setAngle(int(Angles[j]))
@@ -108,7 +108,7 @@ for k in range(Exp):
             time.sleep(Tmes)                    
             #raw_input("\n Press Enter to validate the measurement\n")
             Level = Spectre.getTrace(SwpPt)    
-            if Polarization=='V':
+            if Polarisation=='V':
                 cLevel=Level+Correction_V[:,1]
             else:                    
                 cLevel=Level+Correction_H[:,1]
@@ -118,7 +118,7 @@ for k in range(Exp):
             #while (mean(Level[peaksindx]<Level_criterion))<p/n: #p channels among n
             while (max(Level)<Level_criterion):
                 Level = Spectre.getTrace(SwpPt)    
-                if Polarization=='V':
+                if Polarisation=='V':
                     cLevel=Level+Correction_V[:,1]
                 else:                    
                     cLevel=Level+Correction_H[:,1]
@@ -129,7 +129,7 @@ for k in range(Exp):
             Measurement[l,k,j,:]=array([f[MaxIdx],MaxLevel])
             Raw_Traces[l,k,j,:]=Trace
             print u'%s°, EIRP = %2.2f mW/MHz' %((Angles [j]),10**(MaxLevel/10))
-        fname = ( '%s_Exp%s.txt')  %(Polarization,k+1)
+        fname = ( '%s_Exp%s.txt')  %(Polarisation,k+1)
         savetxt(fname,Measurement[l,k,:])
     r=sum((10**((Measurement[:,k,:,1])/10)),axis=0)           
     print "Printing some figures..."    
@@ -146,7 +146,7 @@ for k in range(Exp):
 print "Raw data saved in file "+nom+'_raw.npz'
 savez(nom+'_raw.npz',Measurement=Measurement,Raw_Traces=Raw_Traces,f=f)
 
-print(u"Back to 0° and vertical polarization ")
+print(u"Back to 0° and vertical polarisation ")
 FC.setAngle(0)
 FC.setPolar(0)
 print("OK")

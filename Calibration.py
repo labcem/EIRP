@@ -35,7 +35,7 @@ VBW=100e3       #VBW size in Hz
 SwpPt=1001       #number of points
 f=linspace(fstart,fstop,SwpPt) #frequency points
 
-Pol=2       #Number of polarizations (vertical + horizontal = 2)
+Pol=2       #Number of polarisations (vertical + horizontal = 2)
 CableLoss=2.8 # Cable loss in dB
 P_gene=0+CableLoss #Signal generator power to get 0 dBm at the antenna input
 
@@ -45,8 +45,8 @@ G_ant_lin=transpose(array([linspace(1e9,12.5e9,24),10**(Logper_AH / 20)]))    # 
 G_ant_inter_lin=scipy.interp(f,G_ant_lin[:,0],G_ant_lin[:,1])   # interpolated gain (linear vlaues)
 G_ant_inter_db=transpose(array([f,20*log10(G_ant_inter_lin)]))  # interpolated gain (dB)   
 
-print '\nInstruments initializations\n'
-print '\nSpectrum analyzer:'
+print '\nInstruments initialisations\n'
+print '\nSpectrum analyser:'
 Spectre=Spectrum.FSV30()
 Spectre.reset()
 Spectre.RBW(RBW)
@@ -70,18 +70,18 @@ FC.AngleVel(20)
 #FC.hVel(20)
 
 
-#######Antenna Heigth
+#######Antenna height
 
-#print '\n Optimization of the Heigth (maximum emission) ' #necessary in semi anechoic configuraion
+#print '\n Optimisation of the height (maximum emission) ' #necessary in semi anechoic configuration
 #print u'\n TurnTable toward O°'
 #FC.setAngle(int(0))
-#print u'\nVertical Polarisation'
+#print u'\nVertical polarisation'
 #FC.setPolar(0)
 #while FC.busy()=="1":
 #        #print("NOK")
 #        time.sleep(0.2)
 #print("OK")
-#raw_input ('\n Emitting and recieving antennas both in vertical polarisation ? Press Entrer to continue')
+#raw_input ('\n Emitting and receiving antennas both in vertical polarisation ? Press Entrer to continue')
 #hmax=2000
 #hmin=1000
 #pas=10 #10 mm
@@ -92,12 +92,12 @@ FC.AngleVel(20)
 #    FC.setHauteur(int(hauteur[i]))
 #    time.sleep(0.05) 
 #    mesure_max[i]=(Spectre.getTrace(SwpPt)).max()
-#    print (' Heigth = %2.2f mm, Power received = %2.2f dBm')  %(hauteur[i],mesure_max[i])
+#    print (' Height = %2.2f mm, Power received = %2.2f dBm')  %(hauteur[i],mesure_max[i])
 #gene.off()
 #h_max=hauteur[argmax(mesure_max)]
 #
 #print ('Best Heigth = %2.2f mm')  %(h_max)
-#print '\nBack to optimal heigth'     
+#print '\nBack to optimal height'     
 #
 #FC.setHauteur(int(h_max))
 
