@@ -18,4 +18,6 @@ Needed:
 
 `EIRP.py` performs the measurement (3 cutting planes).
 
+`EIRP_light.py` allows to choose the cutting plane and the polarization by completing a polarizationxcutting planes matrix.
+
 `SignalGenerator.py`, `Spectrum.py`, `FC06.py` are instrument classes containing the basic functions to perform a complete measurement.
