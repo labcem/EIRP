@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-
 Created on Thu Nov 26 2015
-
 Measurement with the anechoic room, EDF Lab bât D16
-
 emmanuel.amador@edf.fr
-
 """
 
 from __future__ import division
@@ -17,12 +13,9 @@ import os
 from numpy import *
 import matplotlib.pyplot as plt
 
-
-
 #Instruments modules
 import Spectrum
 from FC06 import * #classe du mât et de la table tournante de la CA
-
 
 nom=raw_input('Enter the name of the equipment: ')
 if (os.path.isdir('Results_'+nom)==False):
@@ -48,13 +41,11 @@ RBW=1e6       #RBW size in Hz
 VBW=100e3       #VBW size in Hz
 SwpPt=len(f)       #Number of points
 
-N=7      #Number of incident angles
+N=37      #Number of incident angles
 Angles=linspace(0,360,N)-180
 Pol=2       #Number of polarizations
 Exp=1    #Number of cutting planes
-Tmes=1     #dwell time
-
-
+Tmes=15     #dwell time
 
 ###Stop criterion
 ###channels center frequencies (european wifi)
@@ -66,10 +57,7 @@ Tmes=1     #dwell time
 ##peaksindx=zeros(len(fc))
 ##for i in range(len(fc)):
 #    peaksindx[i]=argmin(abs(f-fc[i]))
-
-
 Level_criterion=-60
-
 
 print '___________________________\nInstruments initializations\n'
 print '\nSpectrum analyzer:'
@@ -91,8 +79,7 @@ FC.setAngle(0)
 print 'Full anechoic chamber, heigth=1.1 m'
 FC.setHauteur(1100)
 
-
-print '____________________\nMeasurement\n'
+print '\nMeasurement...\n'
 raw_input (u"Place your EUT, first cutting plane, angle 0°, Presse Enter ")               
 Measurement=empty([Pol,Exp,N,2])
 Raw_Traces=empty([Pol,Exp,N,2,SwpPt])
@@ -163,4 +150,3 @@ print(u"Back to 0° and vertical polarization ")
 FC.setAngle(0)
 FC.setPolar(0)
 print("OK")
-
