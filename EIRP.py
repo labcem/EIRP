@@ -24,7 +24,7 @@ import Spectrum
 from FC06 import * #classe du mât et de la table tournante de la CA
 
 
-nom=raw_input('Enter the name of the equipment?')
+nom=raw_input('Enter the name of the equipment: ')
 if (os.path.isdir('Results_'+nom)==False):
     os.mkdir('Results_'+nom)
     
@@ -48,11 +48,11 @@ RBW=1e6       #RBW size in Hz
 VBW=100e3       #VBW size in Hz
 SwpPt=len(f)       #Number of points
 
-N=37      #Number of incident angles
+N=7      #Number of incident angles
 Angles=linspace(0,360,N)-180
 Pol=2       #Number of polarizations
-Exp=3    #Number of cutting planes
-Tmes=15     #dwell time
+Exp=1    #Number of cutting planes
+Tmes=1     #dwell time
 
 
 
@@ -88,8 +88,12 @@ FC.reset()
 FC.AngleVel(20)
 #FC.hVel(20)
 FC.setAngle(0)
-raw_input (u"Place your EUT, first cutting plane, angle 0°, Presse Enter ")
-print '____________________\nMeasurement\n'                 
+print 'Full anechoic chamber, heigth=1.1 m'
+FC.setHauteur(1100)
+
+
+print '____________________\nMeasurement\n'
+raw_input (u"Place your EUT, first cutting plane, angle 0°, Presse Enter ")               
 Measurement=empty([Pol,Exp,N,2])
 Raw_Traces=empty([Pol,Exp,N,2,SwpPt])
 
@@ -100,17 +104,15 @@ for k in range(Exp):
         raw_input ("Place your object according to cutting plane %s, Presse Enter " %(k+1))
     for l in range (0,Pol):
         if l==0:
-            print 'Vertical Polarization'
             Polarization='V'
         else:
-            print 'Horizontal Polarization'
             Polarization='H'
         FC.setPolar(l)
         while FC.busy()=="1":
             #print("NOK")
             time.sleep(0.2)
         print("OK")
-        print("Antenna polarization : %s, Cutting plane : %i" %(Polarization,k+1))
+        print("Cutting plane : %i, antenna polarization : %s " %(k+1,Polarization))
         for j in range(0,len(Angles)):              
             #print ("Go to %s deg" %(Angles [j]))
             FC.setAngle(int(Angles[j]))
@@ -124,10 +126,10 @@ for k in range(Exp):
             else:                    
                 cLevel=Level+Correction_H[:,1]
             #criterion automatic stop
-            #while (min(cLevel[peaksindx])<Level_criterion): #every channel
-            #while (min(cLevel[peaksindx])<Level_criterion): #one channel
-            #while (mean(cLevel[peaksindx]<Level_criterion))<p/n: #p channels among n
-            while (max(cLevel)<Level_criterion):
+            #while (min(Level[peaksindx])<Level_criterion): #every channel
+            #while (min(Level[peaksindx])<Level_criterion): #one channel
+            #while (mean(Level[peaksindx]<Level_criterion))<p/n: #p channels among n
+            while (max(Level)<Level_criterion):
                 Level = Spectre.getTrace(SwpPt)    
                 if Polarization=='V':
                     cLevel=Level+Correction_V[:,1]

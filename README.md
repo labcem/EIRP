@@ -14,9 +14,14 @@ Needed:
 
 
 
+<<<<<<< Updated upstream
 `Calibration.py` performs the calibration of the chamber and renders the radiation pattern.
 
 `EIRP.py` performs the measurement (3 cutting planes).
+=======
+`Calibration.py` performs the calibration of the chamber.
+`EIRP.py` performs the measurement (3 cutting planes), and renders the radiation pattern.
+>>>>>>> Stashed changes
 
 `EIRP_light.py` allows to choose the cutting plane and the polarization by completing a (polarisation x cutting planes) matrix.
 

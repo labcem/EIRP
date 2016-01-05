@@ -24,7 +24,7 @@ import Spectrum
 from FC06 import * #classe du mât et de la table tournante de la CA
 
 
-nom=raw_input('Enter the name of the equipment?')
+nom=raw_input('Enter the name of the equipment: ')
 if (os.path.isdir('Results_'+nom)==False):
     os.mkdir('Results_'+nom)
     
@@ -52,7 +52,7 @@ N=37      #Number of incident angles
 Angles=linspace(0,360,N)-180
 Pol=2       #Number of polarizations
 Exp=3    #Number of cutting planes
-Tmes=15     #dwell time
+Tmes=10     #dwell time
 
 #Table de verite de la mesure Plans de coupe*Polarisation 1 signifie que l'essai est effectue
 ExpPol=array([[1, 0],\
@@ -72,7 +72,7 @@ ExpPol=array([[1, 0],\
 #    peaksindx[i]=argmin(abs(f-fc[i]))
 
 
-Level_criterion=-60
+Level_criterion=-45
 
 
 print '___________________________\nInstruments initializations\n'
@@ -92,73 +92,74 @@ FC.reset()
 FC.AngleVel(20)
 #FC.hVel(20)
 FC.setAngle(0)
+print '\nFull anechoic chamber, heigth=1.1 m'
+FC.setHauteur(1100)
 print '____________________\nMeasurement\n'                 
 Measurement=empty([Pol,Exp,N,2])
 Raw_Traces=empty([Pol,Exp,N,2,SwpPt])
 
 for k in range(Exp):
-    for l in range (0,Pol):
-        if ExpPol[k,l]==1:
-            print (u"\nBack to 0°")
-            FC.setAngle(0)
-            raw_input ("Place your object according to cutting plane %s, Presse Enter " %(k+1))
-            if l==0:
-                print 'Vertical Polarization'
-                Polarization='V'
-                FC.setPolar(l)
-                while FC.busy()=="1":
-                    time.sleep(0.2)
-            else:
-                print 'Horizontal Polarization'
-                Polarization='H'
-                FC.setPolar(l)
-                while FC.busy()=="1":
-                    time.sleep(0.2)
-            print("OK")
-            print("Antenna polarization : %s, Cutting plane : %i" %(Polarization,k+1))
-            for j in range(0,len(Angles)):              
-                #print ("Go to %s deg" %(Angles [j]))
-                FC.setAngle(int(Angles[j]))
-                Spectre.readwrite()
-                Spectre.MaxHold()                   
-                time.sleep(Tmes)                    
-                #raw_input("\n Press Enter to validate the measurement\n")
-                Level = Spectre.getTrace(SwpPt)    
-                if Polarization=='V':
-                    cLevel=Level+Correction_V[:,1]
-                else:                    
-                    cLevel=Level+Correction_H[:,1]
-                #criterion automatic stop
-                #while (min(cLevel[peaksindx])<Level_criterion): #every channel
-                #while (min(cLevel[peaksindx])<Level_criterion): #one channel
-                #while (mean(cLevel[peaksindx]<Level_criterion))<p/n: #p channels among n
-                while (max(cLevel)<Level_criterion):
+    if sum(ExpPol[k,:])!=0:
+        print (u"\nMoving to 0°...")
+        FC.setAngle(0)
+        raw_input ("Place your object according to cutting plane %s, Presse Enter " %(k+1))
+        for l in range (0,Pol):
+            if ExpPol[k,l]==1:            
+                if l==0:
+                    Polarization='V'
+                    FC.setPolar(l)
+                    while FC.busy()=="1":
+                        time.sleep(0.2)
+                else:
+                    Polarization='H'
+                    FC.setPolar(l)
+                    while FC.busy()=="1":
+                        time.sleep(0.2)
+                print("OK")
+                print("Cutting plane : %i, antenna polarization : %s " %(k+1,Polarization))
+                for j in range(0,len(Angles)):              
+                    #print ("Go to %s deg" %(Angles [j]))
+                    FC.setAngle(int(Angles[j]))
+                    Spectre.readwrite()
+                    Spectre.MaxHold()                   
+                    time.sleep(Tmes)                    
+                    #raw_input("\n Press Enter to validate the measurement\n")
                     Level = Spectre.getTrace(SwpPt)    
                     if Polarization=='V':
                         cLevel=Level+Correction_V[:,1]
                     else:                    
                         cLevel=Level+Correction_H[:,1]
-                    time.sleep(Tmes)
-                Trace=Level     
-                MaxLevel=max(cLevel)           
-                MaxIdx =cLevel.argmax()             
-                Measurement[l,k,j,:]=array([f[MaxIdx],MaxLevel])
-                Raw_Traces[l,k,j,:]=Trace
-                print u'%s°, EIRP = %2.2f mW/MHz' %((Angles [j]),10**(MaxLevel/10))
-            fname = ( '%s_Exp%s.txt')  %(Polarization,k+1)
-            savetxt(fname,Measurement[l,k,:])
-    r=sum((10**((Measurement[:,k,:,1])/10)),axis=0)           
-    print "Printing some figures..."    
-    plt.close('all')        
-    plt.polar((Angles*pi/180),r)
-    Graphlin= 'Graph_Exp%s' %(k+1)
-    plt.ylabel('PIRE/mW')
-    plt.title("PIRE en mW, plan %s" %(k+1))
-    plt.savefig(Graphlin+'.pdf',bbox='tight')
-    plt.savefig(Graphlin+'.png',bbox='tight')
-    print (Graphlin+'.pdf')
-    print (Graphlin+'.png')    
-    plt.close()
+                    #criterion automatic stop
+                    #while (min(Level[peaksindx])<Level_criterion): #every channel
+                    #while (min(Level[peaksindx])<Level_criterion): #one channel
+                    #while (mean(Level[peaksindx]<Level_criterion))<p/n: #p channels among n
+                    while (max(Level)<Level_criterion):
+                        Level = Spectre.getTrace(SwpPt)    
+                        if Polarization=='V':
+                            cLevel=Level+Correction_V[:,1]
+                        else:                    
+                            cLevel=Level+Correction_H[:,1]
+                        time.sleep(Tmes)
+                    Trace=Level     
+                    MaxLevel=max(cLevel)           
+                    MaxIdx =cLevel.argmax()             
+                    Measurement[l,k,j,:]=array([f[MaxIdx],MaxLevel])
+                    Raw_Traces[l,k,j,:]=Trace
+                    print u'%s°, EIRP = %2.2f mW/MHz' %((Angles [j]),10**(MaxLevel/10))
+                fname = ( '%s_Exp%s.txt')  %(Polarization,k+1)
+                savetxt(fname,Measurement[l,k,:])
+        r=sum((10**((Measurement[:,k,:,1])/10)),axis=0)              
+        print "Printing some figures..." 
+        plt.close('all')        
+        plt.polar((Angles*pi/180),r)
+        Graphlin= 'Graph_Exp%s' %(k+1)
+        plt.ylabel('PIRE/mW')
+        plt.title("PIRE en mW, plan %s" %(k+1))
+        plt.savefig(Graphlin+'.pdf',bbox='tight')
+        plt.savefig(Graphlin+'.png',bbox='tight')
+        print (Graphlin+'.pdf')
+        print (Graphlin+'.png')    
+        plt.close()
 
 print "Raw data saved in file "+nom+'_raw.npz'
 savez(nom+'_raw.npz',Measurement=Measurement,Raw_Traces=Raw_Traces,f=f)
