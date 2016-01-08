@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 25 2015
-Calibration of the anechoic room, EDF Lab bât D16
+Calibration of the anechoic room, EDF Lab bât D16.
+This version of the program uses a txt file to get the cable losses.
+The values for the tested frequencies are derived by using a linear interpolation
+of a measurement from 80 MHz to 6 GHz (every MHz) with the 2m + 10 m cables
+with red extremities in the anechoic chamber: "CableLoss_2m+10m_Cables_rouges_80MHz-6GHz.txt"
+A single value for the losses can be used by uncommenting the appropriate part of the code.
+
+The program performs the free space "attenuation" measurement between the two antennas.
+The program returns 2 files "Cal_Pol_V.txt" and "Cal_Pol_H.txt" at the root folder.
+These files are needed to perform an EIRP measurement.
+
 emmanuel.amador@edf.fr
 """
 from __future__ import division
@@ -20,8 +30,6 @@ test_name = raw_input('Enter the name of the calibration?')
 if os.path.isdir('Calibration_'+test_name)==False:            #verify if the folder exists
    os.mkdir('Calibration_'+test_name)						#create the folder
     
-os.chdir('Calibration_'+test_name)
-
 ###############################################
 ##########   Testing parameters  ##############
 ###############################################
@@ -36,14 +44,29 @@ SwpPt=1001       #number of points
 f=linspace(fstart,fstop,SwpPt) #frequency points
 
 Pol=2       #Number of polarisations (vertical + horizontal = 2)
-CableLoss=4.1 # Cable loss in dB
-P_gene=0+CableLoss #Signal generator power to get 0 dBm at the antenna input
+
+
+
+#Cable Losses from a measurement
+CL=loadtxt("CableLoss_2m+10m_Cables_rouges_80MHz-6GHz.txt")
+Cablelosses_lin=transpose(array([CL[:,0],10**(CL[:,1]/10)]))
+Cablelosses_interp_lin=scipy.interp(f,Cablelosses_lin[:,0],Cablelosses_lin[:,1])
+CableLoss=10*log10(Cablelosses_interp_lin)
+
+##if a single value is enough:
+#CL=-4.1
+#CableLoss=ones(SwpPt)*CL
+
+P_gene=0-CableLoss #Signal generator power to get 0 dBm at the antenna input
 
 #Antenna gain (from calibration) interpolation for our measurement frequencies
 Logper_AH=array([4.62,5.85,5.92,6.43,6.81,6.86,7.58,7.35,7.54,7.73,8.28,8.16,7.93,8.07,8.38,8.06,8.11,8.57,7.98,8.25,8.06,7.80,8.10,7.63])
-G_ant_lin=transpose(array([linspace(1e9,12.5e9,24),10**(Logper_AH / 20)]))    # frequency | Antenna gain (linear values)
+G_ant_lin=transpose(array([linspace(1e9,12.5e9,24),10**(Logper_AH / 10)]))    # frequency | Antenna gain (linear values)
 G_ant_inter_lin=scipy.interp(f,G_ant_lin[:,0],G_ant_lin[:,1])   # interpolated gain (linear vlaues)
-G_ant_inter_db=transpose(array([f,20*log10(G_ant_inter_lin)]))  # interpolated gain (dB)   
+G_ant_inter_db=transpose(array([f,10*log10(G_ant_inter_lin)]))  # interpolated gain (dB)   
+
+os.chdir('Calibration_'+test_name)
+
 
 print '\nInstruments initialisations\n'
 print '\nSpectrum analyser:'
@@ -60,7 +83,7 @@ print '\nSignalGenerator:'
 gene=SignalGenerator.RS_SMF100A()
 gene.reset()
 gene.off() #RF OFF
-gene.setPower(P_gene)
+gene.setPower(P_gene[0])
 gene.setFreq(fcenter)
 
 print u'\n FC-06 Mast and TurnTable Controller'
@@ -81,7 +104,7 @@ FC.AngleVel(20)
 #        #print("NOK")
 #        time.sleep(0.2)
 #print("OK")
-#raw_input ('\n Emitting and receiving antennas both in vertical polarisation ? Press Entrer to continue')
+#raw_input ('\n Emitting and receiving antennas both in vertical polarisation ? Press Enter to continue')
 #hmax=2000
 #hmin=1000
 #pas=10 #10 mm
@@ -120,6 +143,7 @@ for l in range (0,Pol):
     print '%s' %(polar)  
     for i in range(0,len(f)):
         gene.setFreq(f[i])
+        gene.setPower(P_gene[i])
         gene.on()
         time.sleep(0.05)       
         Niveau = Spectre.getTrace(SwpPt)

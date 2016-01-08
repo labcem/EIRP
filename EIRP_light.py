@@ -2,6 +2,7 @@
 """
 Created on Thu. Nov 26 2015
 Flexible EIRP Measurement with the anechoic room, EDF Lab bât D16
+The operator can choose the couples (Cutting-plane, POlarisation tested)
 emmanuel.amador@edf.fr
 """
 from __future__ import division

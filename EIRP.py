@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 26 2015
-Measurement with the anechoic room, EDF Lab bât D16
+Full EIRP Measurement with the anechoic room, EDF Lab bât D16, 3 cutting planes
+and 2 polarisations.
 emmanuel.amador@edf.fr
 """
 

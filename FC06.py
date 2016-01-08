@@ -2,7 +2,16 @@
 """
 Created on Wed Nov 04 16:36:25 2015
 
-@author: Administrateur
+This class controls the FC-06 controller for the mast and turnin table.
+Beware of the controller, sometimes it does not appear as an instrument in the GPIB chain.
+You have to be careful with the GPIB cables and wait a bit before trying to send commands.
+Do not forget to switch on the mast in the chamber before the controller.
+
+If nothing is moving go to http://192.168.100.10:8040/webvisu.htm with IE and try
+to change the velocities of the mast and the turning tables, or try to move them
+with the web interface.
+
+@author: emmanuel.amador@edf.fr
 """
 
 from visa import instrument
@@ -30,13 +39,22 @@ class FC06():
         print(s)
         return True
         
-    #### Plateau Tournant    
+    def busy(self):
+        """ dit si la table ou le mat bougent
+        value=1 si ACTIF
+        value=0 sinon
+        """
+        s=self.ctrl.ask("*BUSY?")
+        return s   
+
+        
+    #### Turning table   
     def getAngle(self):
-        """ Angle du plateau tournant"""
+        """ get the actual angle the turning table """
         return self.ctrl.ask("POS:ANGL?")
         
     def AngleVel(self,value):
-        """ vitesse de rotation..."""
+        """ set the angular velocity of the turning table..."""
         time.sleep(0.5)
         if value<=self.vanglemax and value>=self.vanglemin:
             self.ctrl.write("POS:ANGL:VEL %s" %value)
@@ -45,11 +63,11 @@ class FC06():
                 time.sleep(0.5)
                 s=self.ctrl.ask("*BUSY?")
         else:
-            print("vitesse angulaire non valide")
+            print("out of range angular velocity")
         return True
     
     def setAngle(self,value):
-        """ aller à l'angle..."""
+        """ turn the turntable to the given angle..."""
         time.sleep(0.5)
         if value<=self.anglemax and value>=self.anglemin:
             self.ctrl.write("POS:ANGL %s" %value)
@@ -58,29 +76,29 @@ class FC06():
                 time.sleep(0.5)
                 s=self.ctrl.ask("*BUSY?")
         else:
-            print("angle non valide")
+            print("out of range angle")
         return True
         
-    #### Mât d'antenne
+    #### Antenna Mast
     def getHauteur(self):
-        """ Hauteur de l'antenne"""
+        """ get the actual antenna height"""
         return self.ctrl.ask("POS ?")
         
     def hVel(self,value):
-        """ vitesse du mat..."""
+        """ set the vertical velocity of the mast (not working properly for some reason) """
         time.sleep(0.5)
         if value<=self.vhmax and value>=self.vhmin:
             self.ctrl.write("POS:VEL %s" %value)
             s="1"
             while s=="1":
-                time.sleep(0.1)
+                time.sleep(0.5)
                 s=self.ctrl.ask("*BUSY?")
         else:
-            print("vitesse non valide")
+            print("out of range velocity")
         return True
     
     def setHauteur(self,value):
-        """ aller à la hauteur d'antenne..."""
+        """ got to heigth..."""
         time.sleep(0.5)
         if value<=self.hmax and value>=self.hmin:
             self.ctrl.write("POS %s" %value)
@@ -89,28 +107,27 @@ class FC06():
                 time.sleep(0.5)
                 s=self.ctrl.ask("*BUSY?")
         else:
-            print("hauteur non valide")
+            print("out of range height")
         #return True    
     
     def getPolar(self):
-        """ Polarisation de l'antenne"""
+        """ get the actual antenna's polarisation"""
         s=self.ctrl.ask("POL ?")
         if s=="90.0":
-            ans="Polarisation Horizontale"
+            ans="Horizontal Polarisation"
         if s=="0.0":
-            ans="Polarisation Verticale"
-        #print(ans)
+            ans="Vertical Polarisation"
         return ans
     
     def setPolar(self,value):
-        """ définit la polarisation de l'antenne...
-        value=1 si verticale
-        value=0 si horizontale
+        """ set the antenna's polarisation
+        value=1 : vertical
+        value=0 : horizontal
         
         """
-        time.sleep(0.5)
+        time.sleep(2)
         if value!=0 and value!=1:
-            print("polarisation non valide")
+            print("invalid polarisation")
         else:
             if value==1:
                 self.ctrl.write("POL VERT")
@@ -118,18 +135,10 @@ class FC06():
                 self.ctrl.write("POL HOR")
             s="1"
             while s=="1":
-                time.sleep(0.5)
+                time.sleep(2)
                 s=self.ctrl.ask("*BUSY?")
         return True
         
-    def busy(self):
-        """ dit si la table ou nle mat bougent
-        value=1 si ACTIF
-        value=0 sinon
-        
-        """
-        s=self.ctrl.ask("*BUSY?")
-        return s   
 
 
         
