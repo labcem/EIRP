@@ -82,8 +82,8 @@ FC.setHauteur(1100)
 
 print '\nMeasurement...\n'
 raw_input (u"Place your EUT, first cutting plane, angle 0°, Presse Enter ")               
-Measurement=empty([Pol,Exp,N,2])
-Raw_Traces=empty([Pol,Exp,N,2,SwpPt])
+Measurement=ones([Pol,Exp,N,2])*-Inf #Measurement is logarithmic to get 0 after linearisation
+Raw_Traces=zeros([Pol,Exp,N,2,SwpPt])
 
 for k in range(Exp):
     if k!=0:

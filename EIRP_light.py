@@ -44,7 +44,7 @@ N=37      #Number of incident angles
 Angles=linspace(0,360,N)-180
 Pol=2       #Number of polarisations
 Exp=3    #Number of cutting planes
-Tmes=10     #dwell time
+Tmes=1     #dwell time
 
 #Truth table cutting-planes*Polarisation 1 means the testing is done
 ExpPol=array([[1, 0],\
@@ -83,8 +83,8 @@ FC.setAngle(0)
 print '\nFull anechoic chamber, height=1.1 m'
 FC.setHauteur(1100)
 print '\nMeasurement...\n'                 
-Measurement=empty([Pol,Exp,N,2])
-Raw_Traces=empty([Pol,Exp,N,2,SwpPt])
+Measurement=ones([Pol,Exp,N,2])*-Inf #Measurement is logarithmic to get 0 after linearisation
+Raw_Traces=zeros([Pol,Exp,N,2,SwpPt])
 
 for k in range(Exp):
     if sum(ExpPol[k,:])!=0:
