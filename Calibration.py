@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 25 2015
-Calibration of the anechoic room, EDF Lab bât D16
+Calibration of the anechoic room, EDF Lab bât D16.
+
+The program performs the free space "attenuation" measurement between the two antennas with a single cable loss value.
+The program returns 2 files "Cal_Pol_V.txt" and "Cal_Pol_H.txt" at the root folder.
+These files are needed to perform an EIRP measurement.
+
 emmanuel.amador@edf.fr
 """
 from __future__ import division
