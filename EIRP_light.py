@@ -107,7 +107,7 @@ for k in range(Exp):
                 print("Cutting plane : %i, antenna polarisation : %s " %(k+1,Polarisation))
                 for j in range(0,len(Angles)):              
                     #print ("Go to %s deg" %(Angles [j]))
-                    FC.setAngle(int(Angles[j]))
+                    FC.setAngle(Angles[j])
                     Spectre.readwrite()
                     Spectre.MaxHold()                   
                     time.sleep(Tmes)                    
