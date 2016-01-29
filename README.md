@@ -28,4 +28,5 @@ In order to improve the accuracy of the calibration and of the measurement cable
 
 `SignalGenerator.py`, `Spectrum.py`, `FC06.py` are instrument classes containing the basic functions to control the instruments.
 
-[![ScreenShot](http://img.youtube.com/vi/6tIqqH-jtyY//maxresdefault.jpg)](https://youtu.be/6tIqqH-jtyY)
+[![ScreenShot](http://img.youtube.com/vi/6tIqqH-jtyY/0.jpg)](https://youtu.be/6tIqqH-jtyY)
+[![ScreenShot](http://img.youtube.com/vi/6tIqqH-jtyY/hqdefault.jpg)](https://youtu.be/6tIqqH-jtyY)
